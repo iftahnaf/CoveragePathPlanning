@@ -30,6 +30,6 @@ class Scenario():
             # plt.show()
             map[y[i]][x[i]] = 2
             print(map)
-            plt.pause(0.1)
+            plt.pause(0.05)
         
 

@@ -5,8 +5,9 @@ from modules.CoveragePathPlanner import CoveragePathPlanner
 def main():
     scenario = Scenario()
     planner = CoveragePathPlanner(scenario.map1)
-    x, y = planner.plan()
+    x, y, steps = planner.plan()
     scenario.draw_map(scenario.map1, x, y)
+    print(f"Done in {steps}")
 
 if __name__ =="__main__":
     try:
