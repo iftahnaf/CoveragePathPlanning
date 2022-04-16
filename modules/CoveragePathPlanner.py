@@ -30,11 +30,8 @@ class CoveragePathPlanner():
     def check_passes(self, pose, route):
         counter = 0
         for i in range(len(route[0])):
-            route[1][i]
-            route[0][i]
             if route[1][i] == pose[1] and route[0][i] == pose[0]:
-                counter = counter + 1   
-                print("counter!")       
+                counter = counter + 1         
         return counter
 
     def check_neighbors(self, pose, route):
@@ -49,17 +46,16 @@ class CoveragePathPlanner():
         movements = []
 
         for neighbor in neighbors:
-            if not self.check_bounderies(neighbor):
-                movements.append(1)
-                break
-            else:
-                if not self.check_obstacle(neighbor):
-                    movements.append(1)
-                    break
-            if not self.check_passes(neighbor, route) > 0:
-                    movements.append(1)
-                    break
-            movements.append(0)   
+            if self.check_bounderies(neighbor):
+                movements.append(0)
+                continue
+            if self.check_obstacle(neighbor):
+                movements.append(0)
+                continue
+            if self.check_passes(neighbor, route) > 0:
+                movements.append(0)
+                continue
+            movements.append(1)   
         return movements
 
     def plan(self):
@@ -69,6 +65,7 @@ class CoveragePathPlanner():
         y.append(self.initial_pose[0])
         movement = self.check_neighbors(self.initial_pose, [y, x])
         while not self.done:
+            
             while movement[0]:
                 x.append(x[-1] + 1)
                 y.append(y[-1] + 0)
@@ -85,7 +82,6 @@ class CoveragePathPlanner():
                 x.append(x[-1] - 0)
                 y.append(y[-1] + 1)
                 movement = self.check_neighbors([y[-1], x[-1]], [y, x])
-                # if movement[0]:
-                #     break
-            if len(x) > self.width * self.height:
+            if all(dir == 0 for dir in movement):
+                print("Done solve")
                 return x, y
