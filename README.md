@@ -5,8 +5,8 @@ Given a NxM matrix, where free areas are marked with 0, obstacles with 1 and the
 The answer should list the coordinates of the squares it goes through in order from the starting point, essentially the path to be taken by the robot. In addition, the code should include a simple visualisation to verify the results. I've provided you with three areas the algorithm must be able to cope with.
 
 # General info:
-Coverage Path Planning algorithm for given map, meaning offline solution. My solution based on the paper
-by Zelinsky, 1993, `Planning paths of complete coverage of an unstructured environment by a mobile robot`.
+Coverage Path Planning algorithm for given map, meaning offline solution. My solution inspired by the paper
+of Zelinsky, 1993, `Planning paths of complete coverage of an unstructured environment by a mobile robot`.
 
 # Resources
 
