@@ -59,7 +59,16 @@ class CoveragePathPlanner():
                 continue
             movements.append(1)   
         return movements
-
+    
+    def calculate_distance_map(self):
+        map = np.ones([self.width, self.height])
+        for i in range(self.width):
+            for j in range(self.height):
+                if self.tmp_map[i][j] != 1:
+                    distance = [self.initial_pose[0] - i, self.initial_pose[1] -j]
+                    map[i][j] = np.round(np.linalg.norm(distance))
+        return map
+    
     def plan(self):
         x = []
         y = []
@@ -68,7 +77,6 @@ class CoveragePathPlanner():
         movement = self.check_neighbors(self.initial_pose, [y, x])
         repeat_num = 0
         steps = 0
-        flag = 0
         while not self.done:
             
             while movement[0] and not movement[1]:
@@ -83,7 +91,7 @@ class CoveragePathPlanner():
                 y.append(y[-1] - 1)
                 movement = self.check_neighbors([y[-1], x[-1]], [y, x], repeat_num)
 
-            while movement[1] :
+            while movement[1]:
                 steps = steps + 1
                 x.append(x[-1] - 1)
                 y.append(y[-1] - 0)
@@ -101,5 +109,5 @@ class CoveragePathPlanner():
                 repeat_num = repeat_num + 1
                 movement = self.check_neighbors([y[-1], x[-1]], [y, x], repeat_num)
 
-            if not np.where(self.tmp_map == 0) or repeat_num > 2:
+            if not np.where(self.map == 0) or repeat_num > 2:
                 return x, y, steps

@@ -4,10 +4,13 @@ from modules.CoveragePathPlanner import CoveragePathPlanner
 
 def main():
     scenario = Scenario()
-    planner = CoveragePathPlanner(scenario.map1)
+    map = scenario.map1
+    planner = CoveragePathPlanner(map)
+    distance_map = planner.calculate_distance_map()
+    print(distance_map)
     x, y, steps = planner.plan()
-    scenario.draw_map(scenario.map1, x, y)
-    print(f"Done in {steps}")
+    # scenario.draw_map(map, x, y)
+    print(f"Done in {steps} steps")
 
 if __name__ =="__main__":
     try:
