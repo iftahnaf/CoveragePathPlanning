@@ -126,11 +126,12 @@ class CoveragePathPlanner():
         # visiting is reseting every time there is a new movement allowed.
         # Outputs: x,y - list of the coordinates during the lawn mowing.
         #           steps - the number of steps to fully cover the map.
-        #           1/0 - 1 if the robot successfully covered the map
+        #           unnecessary_steps - the number of steps the robot did on an visiten coordinate.
+        #           1/0 - 1 if the robot successfully covered the map.
         self.visit_map = np.zeros([self.width, self.height])
         self.visit_map = np.where(self.map == 1, 1, 0)
         self.visit_map[self.initial_pose[0]][self.initial_pose[1]] = 1
-
+        unnecessary_steps  = 0
         dist_map = self.calculate_distance_map()
         x = []
         y = []
@@ -164,6 +165,8 @@ class CoveragePathPlanner():
                 y.append(y[-1] + 1)
 
             self.visit_map[y[-1]][x[-1]] = self.visit_map[y[-1]][x[-1]] +1 
+            if self.visit_map[y[-1]][x[-1]] > 1:
+                unnecessary_steps = unnecessary_steps +1
             steps = steps + 1
             movement, distances  = self.check_neighbors([y[-1], x[-1]], [y, x], repeat_num, dist_map=dist_map)
 
@@ -178,11 +181,15 @@ class CoveragePathPlanner():
             if repeat_num > 10:
                 return x, y, steps, 0
 
-        return x, y, steps, 1
+        return x, y, steps, unnecessary_steps, 1
 
     def online_planning(self):
-        # *** EXPERIMENTAL FOR DEVELOPERS ONLY ;) ***
-        # Description: an online option when the map is not given - IN DEVELOPMENT.
+
+
+        # ********** EXPERIMENTAL FOR DEVELOPERS ONLY ;) **********
+
+
+        # Description: an online option when the map is not given.
         # Outputs: x,y - list of the coordinates during the lawn mowing.
         #           steps - the number of steps to fully cover the map.
         dist_map = np.zeros([self.width, self.height])
