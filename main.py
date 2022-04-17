@@ -8,7 +8,7 @@ def main():
     planner = CoveragePathPlanner(map)
     # test = planner.calculate_distance_map()
     # print(test)
-    x, y, steps = planner.off_line_planning()
+    x, y, steps = planner.offline_planning()
     scenario.draw_map(map, x, y)
     print(f"Done in {steps} steps")
 
