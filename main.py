@@ -6,6 +6,8 @@ def main():
     scenario = Scenario()
     map = scenario.map1
     planner = CoveragePathPlanner(map)
+    # test = planner.calculate_distance_map()
+    # print(test)
     x, y, steps = planner.off_line_planning()
     scenario.draw_map(map, x, y)
     print(f"Done in {steps} steps")

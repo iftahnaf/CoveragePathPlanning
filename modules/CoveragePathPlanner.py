@@ -34,7 +34,7 @@ class CoveragePathPlanner():
         counter = 0
         for i in range(len(route[0])):
             if route[1][i] == pose[1] and route[0][i] == pose[0]:
-                counter = counter + 1         
+                counter = counter + 1    
         return counter
 
     def check_neighbors(self, pose, route, repeat_num=0, dist_map=None):
@@ -64,7 +64,7 @@ class CoveragePathPlanner():
                 continue
             movements.append(1)
             if dist_map.all():
-                distances.append(dist_map[pose[1]][pose[0]])  
+                distances.append(dist_map[neighbor[0], neighbor[1]])  
         return movements, distances
     
     def calculate_distance_map(self):
@@ -77,11 +77,12 @@ class CoveragePathPlanner():
         return map
 
     def move_desicsion(self, movement, distances, dir="up"):
+        indx = 0
         if dir in "up":
             max_distance = 0
             for counter, move in enumerate(movement):
                 if move:
-                    if distances[counter] > max_distance:
+                    if distances[counter] >= max_distance:
                         max_distance = distances[counter]
                         indx = counter
             return indx
@@ -89,13 +90,14 @@ class CoveragePathPlanner():
             min_distance = 100
             for counter, move in enumerate(movement):
                 if move:
-                    if distances[counter] < min_distance:
+                    if distances[counter] <= min_distance:
                         min_distance = distances[counter]
                         indx = counter
-            return indx
-
+            return indx  
 
     def off_line_planning(self):
+        self.visit_map = np.zeros([self.width, self.height])
+        self.visit_map = np.where(self.map == 1, 1, 0)
         dist_map = self.calculate_distance_map()
         x = []
         y = []
@@ -122,7 +124,8 @@ class CoveragePathPlanner():
             if indx == 3:
                 x.append(x[-1] - 0)
                 y.append(y[-1] + 1)
-                
+
+            self.visit_map[y[-1]][x[-1]] = self.visit_map[y[-1]][x[-1]] +1 
             steps = steps + 1
             movement, distances  = self.check_neighbors([y[-1], x[-1]], [y, x], repeat_num, dist_map=dist_map)
 
@@ -131,8 +134,7 @@ class CoveragePathPlanner():
                 change_dir = not change_dir
                 movement, distances  = self.check_neighbors([y[-1], x[-1]], [y, x], repeat_num, dist_map=dist_map)
 
-            if not np.where(self.map == 0) or repeat_num > 3:
-                print(np.where(self.map == 0))
+            if not self.visit_map.all() == 0 or repeat_num > 3:
                 return x, y, steps
 
     def on_line_planning(self):
