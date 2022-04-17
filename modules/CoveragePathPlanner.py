@@ -76,7 +76,7 @@ class CoveragePathPlanner():
                     map[i][j] = np.round(np.linalg.norm(distance)) + 2
         return map
 
-    def move_desicsion(self, movement, distances, dir="up"):
+    def move_desicsion(self, movement, distances, pose, dir="up"):
         indx = 0
         if dir in "up":
             max_distance = 0
@@ -109,9 +109,9 @@ class CoveragePathPlanner():
         movement, distances = self.check_neighbors(self.initial_pose, [y, x], dist_map=dist_map)
         while not self.done:
             if not change_dir:
-                indx = self.move_desicsion(movement, distances)
+                indx = self.move_desicsion(movement, distances, [y[-1], x[-1]])
             else:
-                indx = self.move_desicsion(movement, distances, "down")
+                indx = self.move_desicsion(movement, distances, [y[-1], x[-1]], "down")
             if indx == 0:              
                 x.append(x[-1] + 1)
                 y.append(y[-1] + 0)
@@ -127,6 +127,7 @@ class CoveragePathPlanner():
 
             self.visit_map[y[-1]][x[-1]] = self.visit_map[y[-1]][x[-1]] +1 
             steps = steps + 1
+            
             movement, distances  = self.check_neighbors([y[-1], x[-1]], [y, x], repeat_num, dist_map=dist_map)
 
             if all(dir == 0 for dir in movement):
