@@ -124,6 +124,7 @@ class CoveragePathPlanner():
         # Description: iteratively calls iftach switching gradient and updates the route accordingly.
         # Outputs: x,y - list of the coordinates during the lawn mowing.
         #           steps - the number of steps to fully cover the map.
+        #           1/0 - 1 if the robot successfully covered the map
         self.visit_map = np.zeros([self.width, self.height])
         self.visit_map = np.where(self.map == 1, 1, 0)
         dist_map = self.calculate_distance_map()
@@ -132,10 +133,11 @@ class CoveragePathPlanner():
         x.append(self.initial_pose[1])
         y.append(self.initial_pose[0])
         steps = 0
-        repeat_num = 0
+        repeat_num = 1
         change_dir = 0
         movement, distances = self.check_neighbors(self.initial_pose, [y, x], dist_map=dist_map)
         while not self.done:
+            repeat_num = 1
             if not change_dir:
                 indx = self.iftach_switching_gradient(movement, distances, [y[-1], x[-1]])
             else:
@@ -158,23 +160,26 @@ class CoveragePathPlanner():
 
             movement, distances  = self.check_neighbors([y[-1], x[-1]], [y, x], repeat_num, dist_map=dist_map)
 
-            if all(dir == 0 for dir in movement):
+            while all(dir == 0 for dir in movement):
                 repeat_num = repeat_num + 1
                 change_dir = not change_dir
                 movement, distances  = self.check_neighbors([y[-1], x[-1]], [y, x], repeat_num, dist_map=dist_map)
 
-            if not self.visit_map.all() == 0 or repeat_num > 3:
-                return x, y, steps
+            if not self.visit_map.all() == 0:
+                return x, y, steps, 1
+            if repeat_num > 10:
+                return x, y, steps, 0
 
     def online_planning(self):
         # Description: an online option when the map is not given - IN DEVELOPMENT.
         # Outputs: x,y - list of the coordinates during the lawn mowing.
         #           steps - the number of steps to fully cover the map.
+        dist_map = np.zeros([self.width, self.height])
         x = []
         y = []
         x.append(self.initial_pose[1])
         y.append(self.initial_pose[0])
-        movement, _ = self.check_neighbors(self.initial_pose, [y, x])
+        movement, _ = self.check_neighbors(self.initial_pose, [y, x], dist_map=dist_map)
         repeat_num = 0
         steps = 0
         while not self.done:
@@ -183,31 +188,31 @@ class CoveragePathPlanner():
                 steps = steps + 1
                 x.append(x[-1] + 1)
                 y.append(y[-1] + 0)
-                movement, _  = self.check_neighbors([y[-1], x[-1]], [y, x], repeat_num)
+                movement, _  = self.check_neighbors([y[-1], x[-1]], [y, x], repeat_num, dist_map=dist_map)
 
             while movement[2]:
                 steps = steps + 1
                 x.append(x[-1] + 0)
                 y.append(y[-1] - 1)
-                movement, _  = self.check_neighbors([y[-1], x[-1]], [y, x], repeat_num)
+                movement, _  = self.check_neighbors([y[-1], x[-1]], [y, x], repeat_num, dist_map=dist_map)
 
             while movement[1]:
                 steps = steps + 1
                 x.append(x[-1] - 1)
                 y.append(y[-1] - 0)
-                movement, _  = self.check_neighbors([y[-1], x[-1]], [y, x], repeat_num)
+                movement, _  = self.check_neighbors([y[-1], x[-1]], [y, x], repeat_num, dist_map=dist_map)
 
             while movement[3]:
                 steps = steps + 1
                 x.append(x[-1] - 0)
                 y.append(y[-1] + 1)
-                movement, _  = self.check_neighbors([y[-1], x[-1]], [y, x], repeat_num)
+                movement, _  = self.check_neighbors([y[-1], x[-1]], [y, x], repeat_num, dist_map=dist_map)
                 if movement[1]:
                     break
 
             if all(dir == 0 for dir in movement):
                 repeat_num = repeat_num + 1
-                movement, _  = self.check_neighbors([y[-1], x[-1]], [y, x], repeat_num)
+                movement, _  = self.check_neighbors([y[-1], x[-1]], [y, x], repeat_num, dist_map=dist_map)
 
             if not np.where(self.map == 0) or repeat_num > 2:
                 return x, y, steps
