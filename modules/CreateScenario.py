@@ -61,11 +61,16 @@ class Scenario():
         for i in range(len(x)):
             map[y[i]][x[i]] = 2
             plt.pcolor(map[::-1],cmap=cmap,edgecolors='k', linewidths=3)
-            plt.scatter(x[i]+0.5, height-y[i]-0.5, c='Red', marker='o')
+            plt.scatter(x[i]+0.5, height-y[i]-0.5, c='Red', marker='o', linewidths=3)
             plt.axis('equal')
-            plt.pause(0.05)
+            plt.title(f"Number of steps: {i}")
+            plt.pause(0.02)
+        cmap = colors.ListedColormap(['Black', 'Blue'])
+        plt.pcolor(map[::-1],cmap=cmap,edgecolors='k', linewidths=3)
+        plt.scatter(x[i]+0.5, height-y[i]-0.5, c='Red', marker='o', linewidths=3)
         plt.show()
-        
+
+
     def print_map(self, map, x, y):
         for i in range(len(x)):
             map[y[i]][x[i]] = 2

@@ -144,7 +144,7 @@ class CoveragePathPlanner():
 
         while not self.done:
             repeat_num = 0
-            
+
             if not change_dir:
                 indx = self.iftach_switching_gradient(movement, distances, [y[-1], x[-1]])
             else:
@@ -172,7 +172,7 @@ class CoveragePathPlanner():
 
             while all(dir == 0 for dir in movement):
                 repeat_num = repeat_num + 1
-                change_dir = not change_dir
+                change_dir = not change_dir # when stuck, choose direction randomly
                 movement, distances  = self.check_neighbors([y[-1], x[-1]], [y, x], repeat_num, dist_map=dist_map)
 
             if repeat_num > 10:
