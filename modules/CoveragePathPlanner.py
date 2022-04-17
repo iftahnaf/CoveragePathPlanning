@@ -17,9 +17,15 @@ class CoveragePathPlanner():
         self.path = []
     
     def check_obstacle(self, pose):
+        # Description: checks if pose is on obstacle
+        # Inputs: pose - the next robot position.
+        # Outputs: return 1 if pose is an obstacle.
         return self.map[pose[0]][pose[1]] == 1
 
     def check_bounderies(self, pose):
+        # Description: if pose is in the given map. return True if it is outside of the map.
+        # Inputs: pose - the next robot position.
+        # Outputs: return 1 if pose is out of bounds.
         x_bound = False
         y_bound = False
         if pose[0] > self.width-1 or pose[0] < 0 :
@@ -31,14 +37,24 @@ class CoveragePathPlanner():
         return x_bound or y_bound
 
     def check_passes(self, pose, route):
+        # Description: count how many times the robot visited in pose.
+        # Inputs: pose - the next robot position.
+        #         route - the x,y coordinate list of the robots passed positions.
+        # Outputs: counter - how many times the robot visited in the pose.
         counter = 0
         for i in range(len(route[0])):
             if route[1][i] == pose[1] and route[0][i] == pose[0]:
                 counter = counter + 1    
         return counter
 
-    def check_neighbors(self, pose, route, repeat_num=0, dist_map=None):
-        # this is the order of the movment list directions
+    def check_neighbors(self, pose, route, repeat_num=1, dist_map=None):
+        # Description: check allowed movments and distances of the next step
+        # Inputs: pose - the current robot position.
+        #         route - the x,y coordinate list of the robots passed positions.
+        #         repeat_num(1 default) - the number of allowed visits per coordinate
+        #         dist_map(None default) - the distances map
+        # Outputs: movments - 1d array, order: right, left, up down. 1 is allowed movment.
+        #          distances - 1d array, same order as movement, represents the distance number of each position.
         right = [pose[0] + 0, pose[1] + 1]
         left = [pose[0] + 0, pose[1] - 1]
         up = [pose[0] - 1, pose[1] + 0]
@@ -68,6 +84,8 @@ class CoveragePathPlanner():
         return movements, distances
     
     def calculate_distance_map(self):
+        # Description: create a distance 2d map, round the norm of the distance.
+        # Outputs: map - 2d array, each element is some distance from the starting point.
         map = np.ones([self.width, self.height])
         for i in range(self.width):
             for j in range(self.height):
@@ -76,7 +94,14 @@ class CoveragePathPlanner():
                     map[i][j] = np.round(np.linalg.norm(distance)) + 2
         return map
 
-    def move_desicsion(self, movement, distances, pose, dir="up"):
+    def iftach_switching_gradient(self, movement, distances, pose, dir="up"):
+        # Description: decide what the next move should be, I call it iftach switching gradient method.
+        # we move along the gradient of the distances map, when we reach the end of the map start move along the negative gradient of the distances map.
+        # also, if two direction has the same values, we check which has most visited and take the other one. inspired by the wavefront CPP method.
+        # Inputs: movement - 1d array with the allowed direction of movment.
+        #         distances - 1d array with the distances of each movement. 0 for prohibited movement.
+        #         pose - the current position of the robot.
+        # Outputs: indx - the index number of the choosen movement.
         indx = 0
         if dir in "up":
             max_distance = 0
@@ -95,7 +120,10 @@ class CoveragePathPlanner():
                         indx = counter
             return indx  
 
-    def off_line_planning(self):
+    def offline_planning(self):
+        # Description: iteratively calls iftach switching gradient and updates the route accordingly.
+        # Outputs: x,y - list of the coordinates during the lawn mowing.
+        #           steps - the number of steps to fully cover the map.
         self.visit_map = np.zeros([self.width, self.height])
         self.visit_map = np.where(self.map == 1, 1, 0)
         dist_map = self.calculate_distance_map()
@@ -109,9 +137,9 @@ class CoveragePathPlanner():
         movement, distances = self.check_neighbors(self.initial_pose, [y, x], dist_map=dist_map)
         while not self.done:
             if not change_dir:
-                indx = self.move_desicsion(movement, distances, [y[-1], x[-1]])
+                indx = self.iftach_switching_gradient(movement, distances, [y[-1], x[-1]])
             else:
-                indx = self.move_desicsion(movement, distances, [y[-1], x[-1]], "down")
+                indx = self.iftach_switching_gradient(movement, distances, [y[-1], x[-1]], "down")
             if indx == 0:              
                 x.append(x[-1] + 1)
                 y.append(y[-1] + 0)
@@ -127,7 +155,7 @@ class CoveragePathPlanner():
 
             self.visit_map[y[-1]][x[-1]] = self.visit_map[y[-1]][x[-1]] +1 
             steps = steps + 1
-            
+
             movement, distances  = self.check_neighbors([y[-1], x[-1]], [y, x], repeat_num, dist_map=dist_map)
 
             if all(dir == 0 for dir in movement):
@@ -138,7 +166,10 @@ class CoveragePathPlanner():
             if not self.visit_map.all() == 0 or repeat_num > 3:
                 return x, y, steps
 
-    def on_line_planning(self):
+    def online_planning(self):
+        # Description: an online option when the map is not given - IN DEVELOPMENT.
+        # Outputs: x,y - list of the coordinates during the lawn mowing.
+        #           steps - the number of steps to fully cover the map.
         x = []
         y = []
         x.append(self.initial_pose[1])
