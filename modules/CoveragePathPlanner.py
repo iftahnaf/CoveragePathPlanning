@@ -1,5 +1,6 @@
 import dis
 from re import M
+from time import sleep
 import numpy as np
 import itertools
 
@@ -127,6 +128,7 @@ class CoveragePathPlanner():
         #           1/0 - 1 if the robot successfully covered the map
         self.visit_map = np.zeros([self.width, self.height])
         self.visit_map = np.where(self.map == 1, 1, 0)
+        self.visit_map[self.initial_pose[0]][self.initial_pose[1]] = 1
         dist_map = self.calculate_distance_map()
         x = []
         y = []
@@ -137,7 +139,7 @@ class CoveragePathPlanner():
         change_dir = 0
         movement, distances = self.check_neighbors(self.initial_pose, [y, x], dist_map=dist_map)
         while not self.done:
-            repeat_num = 1
+            repeat_num = 0
             if not change_dir:
                 indx = self.iftach_switching_gradient(movement, distances, [y[-1], x[-1]])
             else:
@@ -157,18 +159,20 @@ class CoveragePathPlanner():
 
             self.visit_map[y[-1]][x[-1]] = self.visit_map[y[-1]][x[-1]] +1 
             steps = steps + 1
-
             movement, distances  = self.check_neighbors([y[-1], x[-1]], [y, x], repeat_num, dist_map=dist_map)
+
+            if ( self.visit_map != 0 ).all():
+                break
 
             while all(dir == 0 for dir in movement):
                 repeat_num = repeat_num + 1
                 change_dir = not change_dir
                 movement, distances  = self.check_neighbors([y[-1], x[-1]], [y, x], repeat_num, dist_map=dist_map)
 
-            if not self.visit_map.all() == 0:
-                return x, y, steps, 1
             if repeat_num > 10:
                 return x, y, steps, 0
+
+        return x, y, steps, 1
 
     def online_planning(self):
         # Description: an online option when the map is not given - IN DEVELOPMENT.
