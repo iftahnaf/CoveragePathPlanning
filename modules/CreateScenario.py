@@ -5,49 +5,52 @@ from matplotlib import colors
 import cv2
 
 class Scenario():
-    def __init__(self):
-        self.map1 = np.array([
-            [ 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-            [ 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-            [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [ 0, 0, 0, 0, 0, 0, 1, 1, 1, 0],
-            [ 0, 0, 0, 0, 0, 0, 1, 1, 1, 0],
-            [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0]
-        ])
-        self.map2 = np.array([
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0],
-            [0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0],
-            [0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0],
-            [0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0],
-            [0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 2],
-        ])
-        self.map3 = np.array([
-            [0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0],
-            [0, 0, 1, 1, 1],
-            [0, 0, 1, 1, 1],
-            [0, 0, 1, 1, 1],
-            [0, 0, 1, 0, 0],
-            [0, 0, 1, 0, 0],
-            [0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0],
-            [0, 0, 0, 0, 0],
-            [0, 2, 0, 0, 0],
-        ])
+    def __init__(self, map):
+        if map in "map1":
+            self.map = np.array([
+                [ 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+                [ 1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+                [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [ 0, 0, 0, 0, 0, 0, 1, 1, 1, 0],
+                [ 0, 0, 0, 0, 0, 0, 1, 1, 1, 0],
+                [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [ 2, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+            ])
+        if map in "map2":
+            self.map = np.array([
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0],
+                [0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0],
+                [0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0],
+                [0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0],
+                [0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, 2],
+            ])
+        if map in "map3":
+            self.map = np.array([
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 1, 1, 1],
+                [0, 0, 1, 1, 1],
+                [0, 0, 1, 1, 1],
+                [0, 0, 1, 0, 0],
+                [0, 0, 1, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0],
+                [0, 2, 0, 0, 0],
+            ])
     def convert_to_image(self, map, output_map_image="map_1.png"): 
         # Description: convert the map to png file for testing other methods.
         # Outputs: output_map_image - png image of the matrix 
@@ -77,8 +80,20 @@ class Scenario():
         plt.show()
 
 
-    def print_map(self, map, x, y):
+    def print_map(self, map, x, y, sleep_dt):
+        # Description: drawing the map - the raw version. just printing the updated map for rapid development.
+        # Inputs: map - the given map
+        #         x,y - the coordinates from the planner solution
+        #         sleep_dt - dt between the map's updates.
         for i in range(len(x)):
             map[y[i]][x[i]] = 2
             print(map)
-            plt.pause(0.1)
+            plt.pause(sleep_dt)
+
+    def save_path_to_csv(self, x, y, output_filename):
+        # Description: saving the trajectory to csv file in the results folder
+        # Inputs: x,y - the coordinates from the planner solution
+        #         output_filename - the name of the result file
+        trajectory = [x,y]
+        np.savetxt(f"results/{output_filename}.csv", np.transpose(trajectory), delimiter=",", fmt='%1.f', header="x,y", comments='')
+

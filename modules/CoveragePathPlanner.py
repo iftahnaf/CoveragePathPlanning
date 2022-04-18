@@ -37,7 +37,7 @@ class CoveragePathPlanner():
 
         return x_bound or y_bound
 
-    def check_passes(self, pose, route):
+    def check_visits(self, pose, route):
         # Description: count how many times the robot visited in pose.
         # Inputs: pose - the next robot position.
         #         route - the x,y coordinate list of the robots passed positions.
@@ -75,7 +75,7 @@ class CoveragePathPlanner():
                 movements.append(0)
                 distances.append(0)
                 continue
-            if self.check_passes(neighbor, route) > repeat_num:
+            if self.check_visits(neighbor, route) > repeat_num:
                 movements.append(0)
                 distances.append(0)
                 continue
@@ -173,13 +173,15 @@ class CoveragePathPlanner():
             if ( self.visit_map != 0 ).all():
                 self.done = True
 
+            # change_dir if all(dir == 0 for dir in movement) else not change_dir 
+
             while all(dir == 0 for dir in movement):
                 repeat_num = repeat_num + 1
-                change_dir = not change_dir # when stuck, choose direction randomly
+                change_dir = not change_dir # changing direction randomly
                 movement, distances  = self.check_neighbors([y[-1], x[-1]], [y, x], repeat_num, dist_map=dist_map)
 
             if repeat_num > 10:
-                return x, y, steps, 0
+                return x, y, steps, unnecessary_steps, 0
 
         return x, y, steps, unnecessary_steps, 1
 
@@ -233,4 +235,4 @@ class CoveragePathPlanner():
                 movement, _  = self.check_neighbors([y[-1], x[-1]], [y, x], repeat_num, dist_map=dist_map)
 
             if not np.where(self.map == 0) or repeat_num > 2:
-                return x, y, steps
+                return x, y, steps,_, 0
