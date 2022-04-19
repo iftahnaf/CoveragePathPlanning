@@ -184,7 +184,7 @@ class SwitchingGradientPathPlanning():
 
         return x, y, steps, unnecessary_steps, 1
 
-    def swiching_gradient_planning(self):
+    def switching_gradient_planning(self):
         # Description: calles path_planning method with different hyper-parameters for the same map. 
         # return the shortest solution. 
         # Outputs: x,y - list of the coordinates during the lawn mowing.
