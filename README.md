@@ -31,7 +31,7 @@ The Swiching Gradient method was inspred by the paper by Zelinsky, 1993, `Planni
 
 # Install:
 
-        git clone https://github.com/iftahnaf/CoveragePathPlanning.git
+        git clone https://github.com/iftahnaf/SwichingGradientCPP.git
 
 # Run:
 
