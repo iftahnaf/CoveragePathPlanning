@@ -11,7 +11,7 @@ def main():
     scenario = Scenario(map_number)
     planner = CoveragePathPlanner(scenario.map)
 
-    x, y, steps, unnecessary_steps, done = planner.offline_planning()
+    x, y, steps, unnecessary_steps, done = planner.swiching_gradient_planning()
 
     if done:
         print(f"{map_number} Solved in {steps} steps...")

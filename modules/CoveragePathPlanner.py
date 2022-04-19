@@ -120,16 +120,19 @@ class CoveragePathPlanner():
                         indx = counter
             return indx  
 
-    def offline_planning(self):
+    def path_planning(self,max_repeat=10, gradient_dir=0, switch_dir="randomly"):
         # Description: iteratively calls iftach switching gradient and updates the route accordingly. allowed repeated
         # visiting is reseting every time there is a new movement allowed.
+        # Inputs:  max_repeat(default 10) - the maximum allowed of repeats per square.
+        #          gradient_dir (default 0) - gradient direction, 0 - up, 1 - down.
+        #          switch_dir (default "randomly") - how to change the gradient dir when stuck.
         # Outputs: x,y - list of the coordinates during the lawn mowing.
         #           steps - the number of steps to fully cover the map.
         #           unnecessary_steps - the number of steps the robot did on an visiten coordinate.
         #           1/0 - 1 if the robot successfully covered the map.
-        self.visit_map = np.zeros([self.width, self.height])
-        self.visit_map = np.where(self.map == 1, 1, 0)
-        self.visit_map[self.initial_pose[0]][self.initial_pose[1]] = 1
+        visit_map = np.zeros([self.width, self.height])
+        visit_map = np.where(self.map == 1, 1, 0)
+        visit_map[self.initial_pose[0]][self.initial_pose[1]] = 1
         unnecessary_steps  = 0
         dist_map = self.calculate_distance_map()
         x = []
@@ -138,17 +141,16 @@ class CoveragePathPlanner():
         y.append(self.initial_pose[0])
 
         steps = 0
-        change_dir = 0
 
         movement, distances = self.check_neighbors(self.initial_pose, [y, x], dist_map=dist_map)
 
         while not self.done:
             repeat_num = 0
 
-            if not change_dir:
-                indx = self.iftach_switching_gradient(movement, distances, "down")
-            else:
+            if not gradient_dir:
                 indx = self.iftach_switching_gradient(movement, distances, "up")
+            else:
+                indx = self.iftach_switching_gradient(movement, distances, "down")
 
             if indx == 0:              
                 x.append(x[-1] + 1)
@@ -163,26 +165,51 @@ class CoveragePathPlanner():
                 x.append(x[-1] - 0)
                 y.append(y[-1] + 1)
 
-            self.visit_map[y[-1]][x[-1]] = self.visit_map[y[-1]][x[-1]] +1 
-            if self.visit_map[y[-1]][x[-1]] > 1:
+            visit_map[y[-1]][x[-1]] = visit_map[y[-1]][x[-1]] +1 
+            if visit_map[y[-1]][x[-1]] > 1:
                 unnecessary_steps = unnecessary_steps +1
             steps = steps + 1
             movement, distances  = self.check_neighbors([y[-1], x[-1]], [y, x], repeat_num, dist_map=dist_map)
 
-            if ( self.visit_map != 0 ).all():
-                self.done = True
+            if ( visit_map != 0 ).all(): # stopping condition
+                self.done = True 
 
-            # change_dir if all(dir == 0 for dir in movement) else not change_dir 
+            if switch_dir not in "randomly":
+                gradient_dir if all(dir == 0 for dir in movement) else not gradient_dir 
 
-            while all(dir == 0 for dir in movement):
+            while all(dir == 0 for dir in movement): # stucking condition
                 repeat_num = repeat_num + 1
-                change_dir = not change_dir # changing direction randomly
+                if switch_dir in "randomly":
+                    gradient_dir = not gradient_dir
                 movement, distances  = self.check_neighbors([y[-1], x[-1]], [y, x], repeat_num, dist_map=dist_map)
 
-            if repeat_num > 10:
+            if repeat_num > max_repeat:
                 return x, y, steps, unnecessary_steps, 0
 
         return x, y, steps, unnecessary_steps, 1
+
+    def swiching_gradient_planning(self):
+        # Description: calles path_planning method with different hyper-parameters for the same map. 
+        # return the shortest solution. 
+        # Outputs: x,y - list of the coordinates during the lawn mowing.
+        #           steps - the number of steps to fully cover the map.
+        #           unnecessary_steps - the number of steps the robot did on an visiten coordinate.
+        #           1/0 - 1 if the robot successfully covered the map.
+        gradient_dir = [0, 1]
+        switch_dir = ["randomly", "one_per_stuck"]
+        steps_shortest = 10000
+        for i in gradient_dir:
+            for j in switch_dir:
+                x, y, steps, unnecessary_steps, done = self.path_planning(gradient_dir=i, switch_dir=j)
+                if done:
+                    if steps_shortest > steps:
+                        steps_shortest = steps
+                        unnecessary_steps_shortest = unnecessary_steps
+                        x_shortest = x
+                        y_shortest = y
+                self.__init__(self.map)
+        return x_shortest, y_shortest, steps_shortest, unnecessary_steps_shortest, 1
+
 
     def online_planning(self):
 
