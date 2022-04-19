@@ -94,7 +94,7 @@ class SwitchingGradientPathPlanning():
     def iftach_switching_gradient(self, movement, distances, dir="up"):
         # Description: decide what the next move should be, I call it iftach switching gradient method.
         # we move along the gradient of the distances map, when we reach the end of the map start move along the negative gradient of the distances map.
-        # also, if two direction has the same values, we check which has most visited and take the other one(in the offline_planning function). inspired by the wavefront CPP method.
+        # also, if two direction has the same values, we check which has most visited and take the other one(in the path_planning function). inspired by the wavefront CPP method.
         # Inputs: movement - 1d array with the allowed direction of movment.
         #         distances - 1d array with the distances of each movement. 0 for prohibited movement.
         # Outputs: indx - the index number of the choosen movement.

@@ -56,7 +56,7 @@ class Scenario():
         new_map = np.where(map==2, 0, map)
         cv2.imwrite(output_map_image, 255- new_map*255)
     
-    def draw_map(self, map, x, y, unnecessary_steps, sleep_dt):
+    def show_path(self, map, x, y, unnecessary_steps, sleep_dt):
         # Description: drawing the map and the robot path in a loop.
         # Inputs: map - the given map
         #         x,y - the coordinates from the planner solution
@@ -79,7 +79,7 @@ class Scenario():
         plt.show()
 
 
-    def print_map(self, map, x, y, sleep_dt):
+    def print_path(self, map, x, y, sleep_dt):
         # Description: drawing the map - the raw version. just printing the updated map for rapid development.
         # Inputs: map - the given map
         #         x,y - the coordinates from the planner solution
