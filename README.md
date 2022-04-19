@@ -25,7 +25,7 @@ At each time we reached the end of the gradient (meaning the local maximum or mi
 * Becuase the sensativity to the starting direction of the gradient and the swiching policy, for each map we check those 2 hyper-parameters combinations and takes the one that minimize the steps number.
 
 
-of Zelinsky, 1993, `Planning Paths of Complete Coverage of an Unstructured Environment by a Mobile Robot`.
+The Swiching Gradient method was inspred by the paper by Zelinsky, 1993, `Planning Paths of Complete Coverage of an Unstructured Environment by a Mobile Robot`.
 
 # Install:
 

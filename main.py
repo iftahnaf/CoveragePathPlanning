@@ -4,7 +4,7 @@ from modules.CreateScenario import Scenario
 from modules.CoveragePathPlanner import SwitchingGradientPathPlanning
 
 save_path = False
-map_number = "map1" # change maps here - map1/map2/map3
+map_number = "map3" # change maps here - map1/map2/map3
 show_path = True
 
 def main():
@@ -16,7 +16,7 @@ def main():
     if done:
         print(f"{map_number} Solved in {steps} steps...")
         if show_path:
-            scenario.draw_map(scenario.map, x, y, unnecessary_steps, sleep_dt=0.005)
+            scenario.draw_map(scenario.map, x, y, unnecessary_steps, sleep_dt=0.1)
 
         if save_path:
              scenario.save_path_to_csv(x, y, map_number)
