@@ -46,7 +46,7 @@ The Switching Gradient method was inspred by the paper by Zelinsky, 1993, `Plann
 
 3. `show_path` - Plotting the shortest path given by Switching Gradient CPP algorithem.
 
-# Resources
+# Resources:
 
 ## Main papers:
 1. [A survey on covarage path planning for robots](https://www.sciencedirect.com/science/article/abs/pii/S092188901300167X)
@@ -54,7 +54,7 @@ The Switching Gradient method was inspred by the paper by Zelinsky, 1993, `Plann
 3. [Planning Paths of Complete Coverage of an Unstructured Environment by a Mobile Robot](https://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.53.7617&rep=rep1&type=pdf)
 4. [Spiral-STC: an on-line coverage algorithm of grid environments by a mobile robot](https://ieeexplore.ieee.org/abstract/document/1013479)
 
-## Github
+## Github:
 1. [Full coverage path planner ](https://github.com/nobleo/full_coverage_path_planner) - Full coverage path planning provides a move_base_flex plugin that can plan a path that will fully cover a given area.
 2. [Polygon Coverage Planning](https://github.com/ethz-asl/polygon_coverage_planning)  - Coverage planning in general polygons with holes.
 3. [Spiral Spanning Tree Coverage Path Planner](https://github.com/AtsushiSakai/PythonRobotics/blob/master/PathPlanning/SpiralSpanningTreeCPP/spiral_spanning_tree_coverage_path_planner.py)
