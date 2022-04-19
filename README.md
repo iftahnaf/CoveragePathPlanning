@@ -7,6 +7,8 @@ Given a NxM matrix, where free areas are marked with 0, obstacles with 1 and the
 This repository contains Coverage Path Planning algorithm calls Swiching Gradient CPP.
 The Swiching Gradient CPP is an offline algorithm which minimize the number of needed steps to fully cover the free squares of an entire 2D map with obstacles.
 
+![alt text](https://user-images.githubusercontent.com/58637596/164052763-8bb3a057-813b-43e2-ae92-814dfd5ec3f6.gif)
+
 # Swiching Gradient method:
 
 The algorithm works as follow:

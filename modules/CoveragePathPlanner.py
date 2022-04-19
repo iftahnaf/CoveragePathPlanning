@@ -124,7 +124,7 @@ class SwitchingGradientPathPlanning():
         #          switch_dir (default "randomly") - how to change the gradient dir when stuck.
         # Outputs: x,y - list of the coordinates during the lawn mowing.
         #           steps - the number of steps to fully cover the map.
-        #           unnecessary_steps - the number of steps the robot did on an visiten coordinate.
+        #           unnecessary_steps - the number of steps the robot did on an visited coordinate.
         #           1/0 - 1 if the robot successfully covered the map.
         visit_map = np.zeros([self.width, self.height])
         visit_map = np.where(self.map == 1, 1, 0)
@@ -189,7 +189,7 @@ class SwitchingGradientPathPlanning():
         # return the shortest solution. 
         # Outputs: x,y - list of the coordinates during the lawn mowing.
         #           steps - the number of steps to fully cover the map.
-        #           unnecessary_steps - the number of steps the robot did on an visiten coordinate.
+        #           unnecessary_steps - the number of steps the robot did on an visited coordinate.
         #           1/0 - 1 if the robot successfully covered the map.
         gradient_dir = [0, 1]
         switch_dir = ["randomly", "one_per_stuck"]
