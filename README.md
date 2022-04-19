@@ -35,7 +35,7 @@ The Swiching Gradient method was inspred by the paper by Zelinsky, 1993, `Planni
 
 # Run:
 
-        cd ~/CoveragePathPlanning
+        cd ~/SwichingGradientCPP
         python main.py
 
 ## Settings:
