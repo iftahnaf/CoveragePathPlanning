@@ -1,10 +1,6 @@
-import dis
-from re import M
-from time import sleep
 import numpy as np
-import itertools
 
-class CoveragePathPlanner():
+class SwitchingGradientPathPlanning():
 
     def __init__(self, map):
         self.map = map

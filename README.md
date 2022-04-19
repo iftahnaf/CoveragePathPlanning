@@ -2,11 +2,47 @@
 
 Given a NxM matrix, where free areas are marked with 0, obstacles with 1 and the starting point with 2, find a trajectory that passes through all the free squares with the lowest number of steps. At each step the robot can move to an adjacent (touching sides) free square. The discretisation of the grids is assumed to be equal to the width of the robot that will navigate through the space.
 
-The answer should list the coordinates of the squares it goes through in order from the starting point, essentially the path to be taken by the robot. In addition, the code should include a simple visualisation to verify the results. I've provided you with three areas the algorithm must be able to cope with.
-
 # General info:
-Coverage Path Planning algorithm for given map, meaning offline solution. My solution inspired by the paper
-of Zelinsky, 1993, `Planning paths of complete coverage of an unstructured environment by a mobile robot`.
+
+This repository contains Coverage Path Planning algorithm calls Swiching Gradient CPP.
+The Swiching Gradient CPP is an offline algorithm which minimize the number of needed steps to fully cover the free squares of an entire 2D map with obstacles.
+
+# Swiching Gradient method:
+
+The algorithm works as follow:
+
+* Create a new 2D map, with the same dimensions as the original map. each element in the new map is the value of the distance between the starting point and the element (different distances method can be considered).
+
+* At each step, check which direction is O.K to move with 2 restrictions: the neighbor square should not be an obstacle and it should be in bounds. 
+
+* The algorithm prefers newly neighbors rather than visited ones.
+
+* The next series of steps will be in the positive or negative direction of the distances map. 
+At each time we reached the end of the gradient (meaning the local maximum or minimum of the distances map) we switch to the oppisite direction of the gradient.
+
+* When all suqares are visited, return the path.
+
+* Becuase the sensativity to the starting direction of the gradient and the swiching policy, for each map we check those 2 hyper-parameters combinations and takes the one that minimize the steps number.
+
+
+of Zelinsky, 1993, `Planning Paths of Complete Coverage of an Unstructured Environment by a Mobile Robot`.
+
+# Install:
+
+        git clone https://github.com/iftahnaf/CoveragePathPlanning.git
+
+# Run:
+
+        cd ~/CoveragePathPlanning
+        python main.py
+
+## Settings:
+
+1. `save_path` - if True, the robot's path will be saved as a `.csv` file in the `result` folder.
+
+2. `map_number` - The map number from `CreateScenario` class in the `modules` folder. You can add new maps with the same formation.
+
+3. `show_path` - Plotting the shortest path given by Swiching Gradient CPP algorithem.
 
 # Resources
 

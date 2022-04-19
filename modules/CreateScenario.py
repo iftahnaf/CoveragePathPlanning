@@ -1,4 +1,3 @@
-from time import sleep
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib import colors
@@ -58,7 +57,7 @@ class Scenario():
         cv2.imwrite(output_map_image, 255- new_map*255)
     
     def draw_map(self, map, x, y, unnecessary_steps, sleep_dt):
-        # Description: drawing the map and the robot trajectory in a loop.
+        # Description: drawing the map and the robot path in a loop.
         # Inputs: map - the given map
         #         x,y - the coordinates from the planner solution
         #         sleep_dt - dt between the map's updates.
@@ -91,9 +90,9 @@ class Scenario():
             plt.pause(sleep_dt)
 
     def save_path_to_csv(self, x, y, output_filename):
-        # Description: saving the trajectory to csv file in the results folder
+        # Description: saving the path to csv file in the results folder
         # Inputs: x,y - the coordinates from the planner solution
         #         output_filename - the name of the result file
-        trajectory = [x,y]
-        np.savetxt(f"results/{output_filename}.csv", np.transpose(trajectory), delimiter=",", fmt='%1.f', header="x,y", comments='')
+        path = [x,y]
+        np.savetxt(f"results/{output_filename}.csv", np.transpose(path), delimiter=",", fmt='%1.f', header="x,y", comments='')
 
