@@ -95,13 +95,12 @@ class CoveragePathPlanner():
                     map[i][j] = np.round(np.linalg.norm(distance)) + 2
         return map
 
-    def iftach_switching_gradient(self, movement, distances, pose, dir="up"):
+    def iftach_switching_gradient(self, movement, distances, dir="up"):
         # Description: decide what the next move should be, I call it iftach switching gradient method.
         # we move along the gradient of the distances map, when we reach the end of the map start move along the negative gradient of the distances map.
         # also, if two direction has the same values, we check which has most visited and take the other one(in the offline_planning function). inspired by the wavefront CPP method.
         # Inputs: movement - 1d array with the allowed direction of movment.
         #         distances - 1d array with the distances of each movement. 0 for prohibited movement.
-        #         pose - the current position of the robot.
         # Outputs: indx - the index number of the choosen movement.
         indx = 0
         if dir in "up":
@@ -147,9 +146,9 @@ class CoveragePathPlanner():
             repeat_num = 0
 
             if not change_dir:
-                indx = self.iftach_switching_gradient(movement, distances, [y[-1], x[-1]])
+                indx = self.iftach_switching_gradient(movement, distances, "down")
             else:
-                indx = self.iftach_switching_gradient(movement, distances, [y[-1], x[-1]], "down")
+                indx = self.iftach_switching_gradient(movement, distances, "up")
 
             if indx == 0:              
                 x.append(x[-1] + 1)

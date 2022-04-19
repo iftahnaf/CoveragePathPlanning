@@ -1,21 +1,26 @@
 #!/usr/bin/python3
+## This script calculates and shows the trajectory for fully coverage given 2d map.
 from modules.CreateScenario import Scenario
 from modules.CoveragePathPlanner import CoveragePathPlanner
 
 save_map = False
 map_number = "map3" # change maps here - map1/map2/map3
+show_trajectory = True
 
 def main():
     scenario = Scenario(map_number)
-    map = scenario.map 
-    planner = CoveragePathPlanner(map)
+    planner = CoveragePathPlanner(scenario.map)
+
     x, y, steps, unnecessary_steps, done = planner.offline_planning()
+
     if done:
+        print(f"{map_number} Solved in {steps} steps...")
+        if show_trajectory:
+            scenario.draw_map(scenario.map, x, y, unnecessary_steps, sleep_dt=0.005)
+
         if save_map:
              scenario.save_path_to_csv(x, y, map_number)
-        print(f"{map_number} Solved, drawing...")
-        scenario.draw_map(map, x, y, unnecessary_steps, sleep_dt=0.005)
-        print(f"Solved in {steps} steps...")
+        
     else:
         print("Failed to solve the map, try to increase the maximum number of repeats in offline_planning function")
         
