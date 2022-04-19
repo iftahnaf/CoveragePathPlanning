@@ -4,12 +4,12 @@ Given a NxM matrix, where free areas are marked with 0, obstacles with 1 and the
 
 # General info:
 
-This repository contains Coverage Path Planning algorithm calls Swiching Gradient CPP.
-The Swiching Gradient CPP is an offline algorithm which minimize the number of needed steps to fully cover the free squares of an entire 2D map with obstacles.
+This repository contains Coverage Path Planning algorithm calls Switching Gradient CPP.
+The Switching Gradient CPP is an offline algorithm which minimize the number of needed steps to fully cover the free squares of an entire 2D map with obstacles.
 
 ![alt text](https://user-images.githubusercontent.com/58637596/164052763-8bb3a057-813b-43e2-ae92-814dfd5ec3f6.gif)
 
-# Swiching Gradient method:
+# Switching Gradient method:
 
 The algorithm works as follow:
 
@@ -24,18 +24,18 @@ At each time we reached the end of the gradient (meaning the local maximum or mi
 
 * When all suqares are visited, return the path.
 
-* Becuase the sensativity to the starting direction of the gradient and the swiching policy, for each map we check those 2 hyper-parameters combinations and takes the one that minimize the steps number.
+* Becuase the sensativity to the starting direction of the gradient and the switching policy, for each map we check those 2 hyper-parameters combinations and takes the one that minimize the steps number.
 
 
-The Swiching Gradient method was inspred by the paper by Zelinsky, 1993, `Planning Paths of Complete Coverage of an Unstructured Environment by a Mobile Robot`.
+The Switching Gradient method was inspred by the paper by Zelinsky, 1993, `Planning Paths of Complete Coverage of an Unstructured Environment by a Mobile Robot`.
 
 # Install:
 
-        git clone https://github.com/iftahnaf/SwichingGradientCPP.git
+        git clone https://github.com/iftahnaf/SwitchingGradientCPP.git
 
 # Run:
 
-        cd ~/SwichingGradientCPP
+        cd ~/SwitchingGradientCPP
         python main.py
 
 ## Settings:
@@ -44,7 +44,7 @@ The Swiching Gradient method was inspred by the paper by Zelinsky, 1993, `Planni
 
 2. `map_number` - The map number from `CreateScenario` class in the `modules` folder. You can add new maps with the same formation.
 
-3. `show_path` - Plotting the shortest path given by Swiching Gradient CPP algorithem.
+3. `show_path` - Plotting the shortest path given by Switching Gradient CPP algorithem.
 
 # Resources
 
