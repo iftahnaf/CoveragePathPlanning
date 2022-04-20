@@ -5,16 +5,16 @@ from modules.CoveragePathPlanner import SwitchingGradientPathPlanning
 
 save_path = False
 show_path = True
-map_number = "map2" # change maps here - map1/map2/map3
+map_number = "map1" # change maps here - map1/map2/map3
 
 def main():
     scenario = Scenario(map_number)
     planner = SwitchingGradientPathPlanning(scenario.map)
 
-    x, y, steps, unnecessary_steps, done = planner.switching_gradient_planning()
+    x, y, steps, unnecessary_steps, hyper_paramaters, done = planner.switching_gradient_planning()
 
     if done:
-        print(f"{map_number} Solved in {steps} steps...")
+        print(f"{map_number} Solved in {steps} steps...\nHyper-Parameters: {hyper_paramaters}")
         if show_path:
             scenario.show_path(scenario.map, x, y, unnecessary_steps, sleep_dt=0.005)
 

@@ -207,8 +207,9 @@ class SwitchingGradientPathPlanning():
                             unnecessary_steps_shortest = unnecessary_steps
                             x_shortest = x
                             y_shortest = y
+                            hyper_parameters = {i, j, k}
                     self.__init__(self.map)
-        return x_shortest, y_shortest, steps_shortest, unnecessary_steps_shortest, done
+        return x_shortest, y_shortest, steps_shortest, unnecessary_steps_shortest, hyper_parameters, done
 
 
     def online_planning(self):
