@@ -3,9 +3,9 @@
 from modules.CreateScenario import Scenario
 from modules.CoveragePathPlanner import SwitchingGradientPathPlanning
 
-save_path = False
-show_path = True
-map_number = "map1" # change maps here - map1/map2/map3
+save_path = True
+show_path = False
+map_number = "map3" # change maps here - map1/map2/map3
 
 def main():
     scenario = Scenario(map_number)
