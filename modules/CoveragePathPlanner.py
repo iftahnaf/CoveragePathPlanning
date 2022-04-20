@@ -10,8 +10,6 @@ class SwitchingGradientPathPlanning():
         initial_pose = np.where(self.map == 2)
         self.initial_pose = [initial_pose[0][0], initial_pose[1][0]]
         self.visited = np.zeros([self.width, self.height])
-        self.done = False
-        self.path = []
     
     def check_obstacle(self, pose):
         # Description: checks if pose is on obstacle
@@ -44,7 +42,7 @@ class SwitchingGradientPathPlanning():
                 counter = counter + 1    
         return counter
 
-    def check_neighbors(self, pose, route, repeat_num=1, dist_map=None):
+    def check_neighbors(self, pose, route, repeat_num=0, dist_map=None):
         # Description: check allowed movments and distances of the next step
         # Inputs: pose - the current robot position.
         #         route - the x,y coordinate list of the robots passed positions.
@@ -89,6 +87,7 @@ class SwitchingGradientPathPlanning():
                 if self.tmp_map[i][j] != 1:
                     distance = [self.initial_pose[0] - i, self.initial_pose[1] -j]
                     map[i][j] = np.round(np.linalg.norm(distance)) + 2
+                    # map[i][j] = np.linalg.norm(distance) + 2
         return map
 
     def iftach_switching_gradient(self, movement, distances, dir="up"):
@@ -137,10 +136,11 @@ class SwitchingGradientPathPlanning():
         y.append(self.initial_pose[0])
 
         steps = 0
+        done = 0
 
         movement, distances = self.check_neighbors(self.initial_pose, [y, x], dist_map=dist_map)
 
-        while not self.done:
+        while not done:
             repeat_num = 0
 
             if not gradient_dir:
@@ -168,7 +168,7 @@ class SwitchingGradientPathPlanning():
             movement, distances  = self.check_neighbors([y[-1], x[-1]], [y, x], repeat_num, dist_map=dist_map)
 
             if ( visit_map != 0 ).all(): # stopping condition
-                self.done = True 
+                done = True 
 
             if switch_dir not in "randomly":
                 gradient_dir if all(dir == 0 for dir in movement) else not gradient_dir 
@@ -180,9 +180,9 @@ class SwitchingGradientPathPlanning():
                 movement, distances  = self.check_neighbors([y[-1], x[-1]], [y, x], repeat_num, dist_map=dist_map)
 
             if repeat_num > max_repeat:
-                return x, y, steps, unnecessary_steps, 0
+                return x, y, steps, unnecessary_steps, done
 
-        return x, y, steps, unnecessary_steps, 1
+        return x, y, steps, unnecessary_steps, done
 
     def switching_gradient_planning(self):
         # Description: calles path_planning method with different hyper-parameters for the same map. 
@@ -204,7 +204,7 @@ class SwitchingGradientPathPlanning():
                         x_shortest = x
                         y_shortest = y
                 self.__init__(self.map)
-        return x_shortest, y_shortest, steps_shortest, unnecessary_steps_shortest, 1
+        return x_shortest, y_shortest, steps_shortest, unnecessary_steps_shortest, done
 
 
     def online_planning(self):
