@@ -78,7 +78,7 @@ class SwitchingGradientPathPlanning():
                 distances.append(dist_map[neighbor[0], neighbor[1]])  
         return movements, distances
     
-    def calculate_distance_map(self):
+    def calculate_distance_map(self, method="round"):
         # Description: create a distance 2d map, round the norm of the distance.
         # Outputs: map - 2d array, each element is some distance from the starting point.
         map = np.ones([self.width, self.height])
@@ -86,8 +86,10 @@ class SwitchingGradientPathPlanning():
             for j in range(self.height):
                 if self.tmp_map[i][j] != 1:
                     distance = [self.initial_pose[0] - i, self.initial_pose[1] -j]
-                    map[i][j] = np.round(np.linalg.norm(distance)) + 2
-                    # map[i][j] = np.linalg.norm(distance) + 2
+                    if method in "round":
+                        map[i][j] = np.round(np.linalg.norm(distance)) + 2
+                    else:
+                        map[i][j] = np.linalg.norm(distance) + 2
         return map
 
     def iftach_switching_gradient(self, movement, distances, dir="up"):
@@ -102,7 +104,7 @@ class SwitchingGradientPathPlanning():
             max_distance = 0
             for counter, move in enumerate(movement):
                 if move:
-                    if distances[counter] >= max_distance:
+                    if distances[counter] > max_distance:
                         max_distance = distances[counter]
                         indx = counter
             return indx
@@ -115,7 +117,7 @@ class SwitchingGradientPathPlanning():
                         indx = counter
             return indx  
 
-    def path_planning(self,max_repeat=10, gradient_dir=0, switch_dir="randomly"):
+    def path_planning(self,max_repeat=10, gradient_dir=0, switch_dir="randomly", method="round"):
         # Description: iteratively calls iftach switching gradient and updates the route accordingly. allowed repeated
         # visiting is reseting every time there is a new movement allowed.
         # Inputs:  max_repeat(default 10) - the maximum allowed of repeats per square.
@@ -129,7 +131,7 @@ class SwitchingGradientPathPlanning():
         visit_map = np.where(self.map == 1, 1, 0)
         visit_map[self.initial_pose[0]][self.initial_pose[1]] = 1
         unnecessary_steps  = 0
-        dist_map = self.calculate_distance_map()
+        dist_map = self.calculate_distance_map(method=method)
         x = []
         y = []
         x.append(self.initial_pose[1])
@@ -193,17 +195,19 @@ class SwitchingGradientPathPlanning():
         #           1/0 - 1 if the robot successfully covered the map.
         gradient_dir = [0, 1]
         switch_dir = ["randomly", "one_per_stuck"]
+        dist_method = ["round", "direct"]
         steps_shortest = 10000
         for i in gradient_dir:
             for j in switch_dir:
-                x, y, steps, unnecessary_steps, done = self.path_planning(gradient_dir=i, switch_dir=j)
-                if done:
-                    if steps_shortest > steps:
-                        steps_shortest = steps
-                        unnecessary_steps_shortest = unnecessary_steps
-                        x_shortest = x
-                        y_shortest = y
-                self.__init__(self.map)
+                for k in dist_method:
+                    x, y, steps, unnecessary_steps, done = self.path_planning(gradient_dir=i, switch_dir=j, method=k)
+                    if done:
+                        if steps_shortest > steps:
+                            steps_shortest = steps
+                            unnecessary_steps_shortest = unnecessary_steps
+                            x_shortest = x
+                            y_shortest = y
+                    self.__init__(self.map)
         return x_shortest, y_shortest, steps_shortest, unnecessary_steps_shortest, done
 
 
