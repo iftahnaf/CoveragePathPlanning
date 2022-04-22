@@ -1,4 +1,5 @@
 import numpy as np
+from scipy.spatial import distance
 
 class SwitchingGradientPathPlanning():
 
@@ -9,13 +10,12 @@ class SwitchingGradientPathPlanning():
         self.height = self.map.shape[1]
         initial_pose = np.where(self.map == 2)
         self.initial_pose = [initial_pose[0][0], initial_pose[1][0]]
-        self.visited = np.zeros([self.width, self.height])
     
     def check_obstacle(self, pose):
         # Description: checks if pose is on obstacle
         # Inputs: pose - the next robot position.
         # Outputs: return 1 if pose is an obstacle.
-        return self.map[pose[0]][pose[1]] == 1
+        return self.map[pose[0]][pose[1]]
 
     def check_bounderies(self, pose):
         # Description: if pose is in the given map. return True if it is outside of the map.
@@ -39,14 +39,14 @@ class SwitchingGradientPathPlanning():
         counter = 0
         for i in range(len(route[0])):
             if route[1][i] == pose[1] and route[0][i] == pose[0]:
-                counter = counter + 1    
+                counter +=  1    
         return counter
 
     def check_neighbors(self, pose, route, repeat_num=0, dist_map=None):
         # Description: check allowed movments and distances of the next step
         # Inputs: pose - the current robot position.
         #         route - the x,y coordinate list of the robots passed positions.
-        #         repeat_num(1 default) - the number of allowed visits per coordinate
+        #         repeat_num(0 default) - the number of allowed visits per coordinate
         #         dist_map(None default) - the distances map
         # Outputs: movments - 1d array, order: right, left, up down. 1 is allowed movment.
         #          distances - 1d array, same order as movement, represents the distance number of each position.
@@ -73,9 +73,10 @@ class SwitchingGradientPathPlanning():
                 movements.append(0)
                 distances.append(0)
                 continue
+
             movements.append(1)
-            if dist_map.all():
-                distances.append(dist_map[neighbor[0], neighbor[1]])  
+            distances.append(dist_map[neighbor[0], neighbor[1]])  
+
         return movements, distances
     
     def calculate_distance_map(self, method="round"):
@@ -130,13 +131,13 @@ class SwitchingGradientPathPlanning():
         visit_map = np.zeros([self.width, self.height])
         visit_map = np.where(self.map == 1, 1, 0)
         visit_map[self.initial_pose[0]][self.initial_pose[1]] = 1
-        unnecessary_steps  = 0
         dist_map = self.calculate_distance_map(method=method)
         x = []
         y = []
         x.append(self.initial_pose[1])
         y.append(self.initial_pose[0])
 
+        unnecessary_steps  = 0
         steps = 0
         done = 0
 
@@ -165,24 +166,24 @@ class SwitchingGradientPathPlanning():
 
             visit_map[y[-1]][x[-1]] = visit_map[y[-1]][x[-1]] +1 
             if visit_map[y[-1]][x[-1]] > 1:
-                unnecessary_steps = unnecessary_steps +1
-            steps = steps + 1
+                unnecessary_steps += +1
+            steps +=  1
             movement, distances  = self.check_neighbors([y[-1], x[-1]], [y, x], repeat_num, dist_map=dist_map)
 
             if ( visit_map != 0 ).all(): # stopping condition
                 done = True 
 
             if switch_dir not in "randomly":
-                gradient_dir if all(dir == 0 for dir in movement) else not gradient_dir 
+                not gradient_dir if all(dir == 0 for dir in movement) else gradient_dir 
 
             while all(dir == 0 for dir in movement): # stucking condition
-                repeat_num = repeat_num + 1
+                repeat_num += 1
                 if switch_dir in "randomly":
                     gradient_dir = not gradient_dir
                 movement, distances  = self.check_neighbors([y[-1], x[-1]], [y, x], repeat_num, dist_map=dist_map)
 
             if repeat_num > max_repeat:
-                return x, y, steps, unnecessary_steps, done
+                break
 
         return x, y, steps, unnecessary_steps, done
 
@@ -213,11 +214,7 @@ class SwitchingGradientPathPlanning():
 
 
     def online_planning(self):
-
-
         # ********** EXPERIMENTAL FOR DEVELOPERS ONLY ;) **********
-
-
         # Description: an online option when the map is not given.
         # Outputs: x,y - list of the coordinates during the lawn mowing.
         #           steps - the number of steps to fully cover the map.

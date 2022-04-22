@@ -50,6 +50,24 @@ class Scenario():
                 [0, 0, 0, 0, 0],
                 [0, 2, 0, 0, 0],
             ])
+
+        if map in "map4":
+            self.map = np.array([
+                [0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 1, 1, 1, 0, 0, 0],
+                [0, 0, 1, 1, 1, 0, 0, 0],
+                [0, 0, 1, 1, 1, 0, 0, 0],
+                [0, 0, 1, 1, 1, 0, 0, 0],
+                [0, 0, 1, 1, 1, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 1, 1, 1, 0, 0, 0],
+                [0, 0, 1, 1, 1, 0, 0, 0],
+                [0, 0, 0, 0, 0, 0, 0, 0],
+                [0, 0, 0, 2, 0, 0, 0, 0],
+            ])
     def convert_to_image(self, map, output_map_image="map_1.png"): 
         # Description: convert the map to png file for testing other methods.
         # Outputs: output_map_image - png image of the matrix 
