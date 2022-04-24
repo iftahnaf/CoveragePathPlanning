@@ -1,7 +1,7 @@
 from turtle import color
 import numpy as np
 import matplotlib.pyplot as plt
-from matplotlib import colors
+from matplotlib import colors, scale
 import cv2
 
 class Scenario():
@@ -80,27 +80,30 @@ class Scenario():
         # Inputs: map - the given map
         #         x,y - the coordinates from the planner solution
         #         sleep_dt - dt between the map's updates.
+        #         grad_dir_along_path_shortest - list of the gradient direction at each step
+        #         dist_map - the calculated distance map.
+        #         show_dist_map - show the distance map on the path.
 
         cmap = colors.ListedColormap(['White','Black', 'Blue'])
 
         height, _ = map.shape
-        plt.figure(figsize=(6,6))
+        plt.figure(figsize=(8,8))
 
         quiver_pointer = grad_dir_along_path_shortest
         for i in range(len(quiver_pointer)):
             if quiver_pointer[i] == 0:
                 quiver_pointer[i] = -1
-        quiver_pointer.append(1)
+        quiver_pointer.append(quiver_pointer[-1])
 
         if show_dist_map:
             for i in range(len(x)):
-                plt.text(x[i]+0.25, height-y[i]-0.5, str(np.int(dist_map[y[i]][x[i]])))
+                plt.text(x[i]+0.25, height-y[i]-0.5, str((dist_map[y[i]][x[i]])))
 
         for i in range(len(x)):
             map[y[i]][x[i]] = 2
             plt.pcolor(map[::-1],cmap=cmap,edgecolors='k', linewidths=3)
-            plt.scatter(x[i]+0.5, height-y[i]-0.75, c='Red', marker='o', linewidths=2)
-            plt.quiver(x[i]+0.5, height-y[i]-0.75, 0, -quiver_pointer[i], color='Red')
+            plt.scatter(x[i]+0.5, height-y[i]-0.5+0.25*quiver_pointer[i], c='Red', marker='o', linewidths=1)
+            plt.quiver(x[i]+0.5, height-y[i]-0.5+0.25*quiver_pointer[i], 0, -quiver_pointer[i], color='Red')
             plt.axis('equal')
             plt.title(f"Number of steps: {i}")
             plt.pause(sleep_dt)
@@ -108,8 +111,8 @@ class Scenario():
         cmap = colors.ListedColormap(['Black', 'Blue'])
         plt.title(f"Number of steps: {i}\n{unnecessary_steps} Steps were taken over covered squares")
         plt.pcolor(map[::-1],cmap=cmap,edgecolors='k', linewidths=3)
-        plt.scatter(x[i]+0.5, height-y[i]-0.75, c='Red', marker='o', linewidths=2)
-        plt.quiver(x[i]+0.5, height-y[i]-0.75, 0,1, color='Red')
+        plt.scatter(x[i]+0.5, height-y[i]-0.5+0.25*quiver_pointer[i], c='Red', marker='o', linewidths=2)
+        plt.quiver(x[i]+0.5, height-y[i]-0.5+0.25*quiver_pointer[i], 0,-quiver_pointer[i], color='Red')
         plt.show()
 
 
