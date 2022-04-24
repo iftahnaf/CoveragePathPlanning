@@ -1,3 +1,4 @@
+from multiprocessing.dummy import freeze_support
 import numpy as np
 from scipy.spatial import distance
 
@@ -79,19 +80,39 @@ class SwitchingGradientPathPlanning():
 
         return movements, distances
     
-    def calculate_distance_map(self, method="round"):
+    def calculate_distance_map(self, current_pose=[0, 0], method="round"):
         # Description: create a distance 2d map, round the norm of the distance.
         # Outputs: map - 2d array, each element is some distance from the starting point.
         map = np.ones([self.width, self.height])
         for i in range(self.width):
             for j in range(self.height):
                 if self.tmp_map[i][j] != 1:
-                    distance = [self.initial_pose[0] - i, self.initial_pose[1] -j]
+                    distance = [current_pose[0] - i, current_pose[1] -j]
                     if method in "round":
                         map[i][j] = np.round(np.linalg.norm(distance)) + 2
                     else:
                         map[i][j] = np.linalg.norm(distance) + 2
+        self.max_dist = np.max(map)
         return map
+    
+    # def direct_backtracking(self, current_pose, visit_map, dist_map, x, y):
+    #     done = False
+    #     min_value = 10000
+    #     free_squares = np.where(visit_map == 0)
+    #     new_dist_map = dist_map(current_pose=current_pose)
+    #     for free_square in free_squares:
+    #         if new_dist_map[free_square] < min_value:
+    #             min_value = new_dist_map[free_squares]
+    #             dest = free_square
+    #     x_moves = dest[0] - current_pose[0]
+    #     y_moves = dest[1] - current_pose[1]
+    #     for i in range(x_moves):
+    #         if not self.check_bounderies():
+    #             x.append(x+i)
+            
+
+
+
 
     def iftach_switching_gradient(self, movement, distances, dir="up"):
         # Description: decide what the next move should be, I call it iftach switching gradient method.
@@ -127,13 +148,15 @@ class SwitchingGradientPathPlanning():
         # Outputs: x,y - list of the coordinates during the lawn mowing.
         #           steps - the number of steps to fully cover the map.
         #           unnecessary_steps - the number of steps the robot did on an visited coordinate.
+        #           grad_dir_along_path - a list of the gradient direction along the path.
         #           1/0 - 1 if the robot successfully covered the map.
         visit_map = np.zeros([self.width, self.height])
         visit_map = np.where(self.map == 1, 1, 0)
         visit_map[self.initial_pose[0]][self.initial_pose[1]] = 1
-        dist_map = self.calculate_distance_map(method=method)
+        dist_map = self.calculate_distance_map(current_pose=self.initial_pose, method=method)
         x = []
         y = []
+        grad_dir_along_path = []
         x.append(self.initial_pose[1])
         y.append(self.initial_pose[0])
 
@@ -145,7 +168,7 @@ class SwitchingGradientPathPlanning():
 
         while not done:
             repeat_num = 0
-
+            grad_dir_along_path.append(np.float(gradient_dir))
             if not gradient_dir:
                 indx = self.iftach_switching_gradient(movement, distances, "up")
             else:
@@ -185,7 +208,7 @@ class SwitchingGradientPathPlanning():
             if repeat_num > max_repeat:
                 break
 
-        return x, y, steps, unnecessary_steps, done
+        return x, y, steps, unnecessary_steps, grad_dir_along_path, done
 
     def switching_gradient_planning(self):
         # Description: calles path_planning method with different hyper-parameters for the same map. 
@@ -201,7 +224,7 @@ class SwitchingGradientPathPlanning():
         for i in gradient_dir:
             for j in switch_dir:
                 for k in dist_method:
-                    x, y, steps, unnecessary_steps, done = self.path_planning(gradient_dir=i, switch_dir=j, method=k)
+                    x, y, steps, unnecessary_steps, grad_dir_along_path, done = self.path_planning(gradient_dir=i, switch_dir=j, method=k)
                     if done:
                         if steps_shortest > steps:
                             steps_shortest = steps
@@ -209,8 +232,9 @@ class SwitchingGradientPathPlanning():
                             x_shortest = x
                             y_shortest = y
                             hyper_parameters = {i, j, k}
+                            grad_dir_along_path_shortest = grad_dir_along_path
                     self.__init__(self.map)
-        return x_shortest, y_shortest, steps_shortest, unnecessary_steps_shortest, hyper_parameters, done
+        return x_shortest, y_shortest, steps_shortest, unnecessary_steps_shortest, grad_dir_along_path_shortest, hyper_parameters, done
 
 
     def online_planning(self):
