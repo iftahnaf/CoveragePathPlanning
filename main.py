@@ -5,7 +5,7 @@ from modules.CoveragePathPlanner import SwitchingGradientPathPlanning
 
 save_path = False
 show_path = True
-map_number = "map2" # change maps here - map1/map2/map3
+map_number = "map4" # change maps here - map1/map2/map3
 
 def main():
     scenario = Scenario(map_number)
@@ -16,7 +16,7 @@ def main():
     if done:
         print(f"\n{map_number} Solved in {steps} steps, {unnecessary_steps} steps were unnecessary...\n\nHyper-Parameters:\n\n    Starting Direction: {hyper_paramaters.pop()}\n    Distance Calculation: {hyper_paramaters.pop()}\n    Gradient's changing policy: {hyper_paramaters.pop()}\n\n")
         if show_path:
-            scenario.show_path(scenario.map, x, y, unnecessary_steps, sleep_dt=0.05,grad_dir_along_path_shortest=grad_dir_along_path_shortest, dist_map=dist_map, show_dist_map=False)
+            scenario.show_path(scenario.map, x, y, unnecessary_steps, sleep_dt=0.005, grad_dir_along_path_shortest=grad_dir_along_path_shortest, dist_map=dist_map, show_dist_map=True)
 
         if save_path:
             scenario.save_path_to_csv(x, y, map_number)
